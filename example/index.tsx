@@ -1,11 +1,12 @@
 import { createRoot } from "react-dom/client";
-import { createStore, type Store } from "../dist/index.mjs";
+import type { Store } from "../src";
+import { createStoreWithHook } from "../src/react";
 
 export interface State {
 	count: number;
 }
 
-export const [store, useStore] = createStore<State>({
+export const [store, useStore] = createStoreWithHook<State>({
 	count: 0,
 });
 

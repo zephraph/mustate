@@ -1,14 +1,14 @@
 import { act, render, renderHook, waitFor } from "@testing-library/react";
 import { useEffect, useLayoutEffect } from "react";
 import { describe, expect, it } from "vitest";
-import { createStore } from "../src";
+import { createStoreWithHook } from "../src/react";
 
 type State = {
 	count: number;
 };
 
 it("uses the store with no args", async () => {
-	const [store, useStore] = createStore<State>({
+	const [store, useStore] = createStoreWithHook<State>({
 		count: 0,
 	});
 
@@ -28,7 +28,7 @@ it("uses the store with no args", async () => {
 });
 
 it("uses the store with selectors", async () => {
-	const [store, useStore] = createStore<State>({
+	const [store, useStore] = createStoreWithHook<State>({
 		count: 0,
 	});
 
@@ -48,7 +48,7 @@ it("uses the store with selectors", async () => {
 });
 
 it("uses the store with mutate", async () => {
-	const [store, useStore] = createStore<State>({
+	const [store, useStore] = createStoreWithHook<State>({
 		count: 0,
 	});
 
@@ -70,7 +70,7 @@ it("only re-renders if the selected state changes", async () => {
 		settings: { theme: string };
 	};
 
-	const [store, useStore] = createStore<MultiState>({
+	const [store, useStore] = createStoreWithHook<MultiState>({
 		count: 0,
 		name: "initial",
 		settings: { theme: "light" },
@@ -152,7 +152,7 @@ it("only re-renders if the selected state changes", async () => {
 });
 
 it("re-renders with useLayoutEffect", async () => {
-	const [store, useStore] = createStore<{ state: boolean }>({
+	const [store, useStore] = createStoreWithHook<{ state: boolean }>({
 		state: false,
 	});
 
@@ -172,12 +172,16 @@ it("re-renders with useLayoutEffect", async () => {
 
 it("can update the selector", async () => {
 	type State = { one: string; two: string };
-	const [_store, useStore] = createStore<State>({
+	const [_store, useStore] = createStoreWithHook<State>({
 		one: "one",
 		two: "two",
 	});
 
-	function Component({ selector }) {
+	function Component({
+		selector,
+	}: {
+		selector: (s: { one: string; two: string }) => string;
+	}) {
 		return <div>{useStore(selector)}</div>;
 	}
 
@@ -192,7 +196,7 @@ it("can update the selector", async () => {
 
 describe("modern hook tests", () => {
 	it("works with renderHook", () => {
-		const [store, useStore] = createStore({ count: 0 });
+		const [store, useStore] = createStoreWithHook({ count: 0 });
 
 		const { result } = renderHook(() => useStore());
 
@@ -206,7 +210,7 @@ describe("modern hook tests", () => {
 	});
 
 	it("selector prevents unnecessary re-renders", () => {
-		const [store, useStore] = createStore({
+		const [store, useStore] = createStoreWithHook({
 			count: 0,
 			name: "test",
 		});
