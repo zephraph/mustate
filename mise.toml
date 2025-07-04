@@ -1,0 +1,29 @@
+[tools]
+bun = "1.2.8"
+
+[env]
+_.path = "node_modules/.bin"
+_.file = ".env"
+
+[hooks]
+postinstall = "bun install"
+
+[tasks.fmt]
+run = "biome check --unsafe --write ."
+
+[tasks.start]
+run = "bun run build --watch"
+
+[tasks.build]
+run = "bun run build"
+
+[tasks.test]
+run = "bun run test"
+
+[tasks.typecheck]
+run = "tsc --noEmit"
+
+[tasks.example]
+depends = ["build"]
+run = "bun start"
+dir = "example"
