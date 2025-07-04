@@ -1,0 +1,47 @@
+{
+	"name": "@just-be/mustate",
+	"version": "1.0.0",
+	"author": "Justin Bennett <oss@just-be.dev>",
+	"workspaces": [
+		"example"
+	],
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"dependencies": {
+		"mutative": "^1.2.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.0.6",
+		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/react": "^16.3.0",
+		"@types/react": "^19.1.8",
+		"@types/react-dom": "^19.1.6",
+		"@vitejs/plugin-react": "^4.6.0",
+		"happy-dom": "^18.0.1",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0",
+		"react-test-renderer": "19.1.0",
+		"tsup": "^8.5.0",
+		"typescript": "^5.8.3",
+		"vitest": "^3.2.4"
+	},
+	"description": "Minimal immutable state management for React",
+	"files": [
+		"dist"
+	],
+	"license": "MIT",
+	"publishConfig": {
+		"registry": "https://registry.npmjs.org/",
+		"access": "public"
+	},
+	"scripts": {
+		"start": "bun run build --watch",
+		"build": "tsup",
+		"test": "vitest"
+	},
+	"typings": "dist/index.d.ts",
+	"peerDependencies": {
+		"react": ">=19",
+		"react-dom": ">=19"
+	}
+}

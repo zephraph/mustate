@@ -1,0 +1,15 @@
+{
+	"include": ["src", "tests"],
+	"compilerOptions": {
+		"target": "es2022",
+		"module": "esnext",
+		"lib": ["es2022", "dom"],
+		"declaration": true,
+		"strict": true,
+		"moduleResolution": "bundler",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"jsx": "react-jsx"
+	}
+}
