@@ -1,0 +1,19 @@
+{
+	"name": "mustate-example",
+	"private": true,
+	"version": "1.0.0",
+	"license": "MIT",
+	"scripts": {
+		"start": "parcel serve index.html"
+	},
+	"dependencies": {
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
+	},
+	"devDependencies": {
+		"@types/react": "^19.1.8",
+		"@types/react-dom": "^19.1.6",
+		"parcel": "^2.15.4",
+		"typescript": "^5.8.3"
+	}
+}
