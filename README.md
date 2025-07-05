@@ -113,3 +113,7 @@ function User({ id }) {
   return <p>The username is {user.name}</p>;
 }
 ```
+
+## Inspiration
+
+This project was inspired by Jared Palmer's [Mutik](https://github.com/jaredpalmer/mutik).
