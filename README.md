@@ -12,7 +12,9 @@ npm install @just-be/mustate
 
 - [Example](#example)
 - [API](#api)
-  - [`createStore<State>(initialState: State): [Store<State>, useStore<Value>(selector: (state: State) => Value): Value]`](#createstorestateintialstate-state-storestate-usestorevalueselector-state-state--value-value)
+  - [`createStore<State>(initialState: State): Store<State>`](#createstorestateintialstate-state-storestate)
+  - [`createStoreHook<State>(store: Store<State>): useStore`](#createstorehookstatestore-storestate-usestore)
+  - [`createStoreWithHook<State>(initialState: State): [Store<State>, useStore]`](#createstorewithhookstateintialstate-state-storestate-usestore)
     - [`store`](#store)
     - [`useStore<Value>(selector: (state: State) => Value): Value`](#usestorevalueselector-state-state--value-value)
 
@@ -21,10 +23,10 @@ npm install @just-be/mustate
 ```jsx
 import React from 'react';
 import { render } from 'react-dom';
-import { createStore } from '@just-be/mustate';
+import { createStoreWithHook } from '@just-be/mustate';
 
 // Create a lil' store with some state
-let [store, useStore] = createStore({
+let [store, useStore] = createStoreWithHook({
   count: 0,
 });
 
@@ -77,9 +79,44 @@ render(<App />, window.root);
 
 ## API
 
-### `createStore<State>(initialState: State): [Store<State>, useStore<Value>(selector: (state: State) => Value): Value]`
+### `createStore<State>(initialState: State): Store<State>`
 
-Create a mustate `store` given some initial state. The `store` has the following API you can use in or out of React.
+Create a mustate `store` given some initial state. Returns a store instance that can be used anywhere in your application.
+
+```jsx
+import { createStore } from '@just-be/mustate';
+
+const store = createStore({ count: 0, name: 'Alice' });
+```
+
+### `createStoreHook<State>(store: Store<State>): useStore`
+
+Create a React hook for a specific store. This allows you to subscribe to state changes in React components.
+
+```jsx
+import { createStore, createStoreHook } from '@just-be/mustate';
+
+const store = createStore({ count: 0 });
+const useStore = createStoreHook(store);
+
+// In a React component
+function Counter() {
+  const count = useStore(state => state.count);
+  return <div>{count}</div>;
+}
+```
+
+### `createStoreWithHook<State>(initialState: State): [Store<State>, useStore]`
+
+Convenience function that combines `createStore` and `createStoreHook`. This is equivalent to calling both functions separately.
+
+```jsx
+import { createStoreWithHook } from '@just-be/mustate';
+
+const [store, useStore] = createStoreWithHook({ count: 0, name: 'Alice' });
+```
+
+The `store` has the following API you can use in or out of React:
 
 #### `store`
 
