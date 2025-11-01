@@ -1,6 +1,7 @@
 {
 	"name": "@just-be/mustate",
 	"version": "1.0.0",
+	"type": "module",
 	"author": "Justin Bennett <oss@just-be.dev>",
 	"workspaces": [
 		"example"
@@ -21,7 +22,7 @@
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
 		"react-test-renderer": "19.1.0",
-		"tsup": "^8.5.0",
+		"tsdown": "^0.15.12",
 		"typescript": "^5.8.3",
 		"vitest": "^3.2.4"
 	},
@@ -36,7 +37,7 @@
 	},
 	"scripts": {
 		"start": "bun run build --watch",
-		"build": "tsup",
+		"build": "tsdown",
 		"test": "vitest"
 	},
 	"typings": "dist/index.d.ts",
