@@ -5,6 +5,10 @@ bun = "1.2.8"
 _.path = "node_modules/.bin"
 _.file = ".env"
 
+[settings]
+pin = true
+experimental = true
+
 [hooks]
 postinstall = "bun install"
 
