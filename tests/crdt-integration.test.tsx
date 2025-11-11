@@ -1,5 +1,5 @@
+import { describe, expect, it } from "bun:test";
 import { act, render, renderHook } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
 import {
 	applyPatchesWithConflictResolution,
 	type EnhancedPatch,

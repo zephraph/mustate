@@ -22,7 +22,7 @@ run = "bun run build --watch"
 run = "bun run build"
 
 [tasks.test]
-run = "bun run test"
+run = "bun test"
 
 [tasks.typecheck]
 run = "tsc --noEmit"

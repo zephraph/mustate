@@ -1,5 +1,5 @@
 {
-	"include": ["src", "tests"],
+	"include": ["src", "tests", "env.d.ts"],
 	"compilerOptions": {
 		"target": "es2022",
 		"module": "esnext",

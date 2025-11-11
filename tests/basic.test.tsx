@@ -1,6 +1,6 @@
+import { describe, expect, it } from "bun:test";
 import { act, render, renderHook, waitFor } from "@testing-library/react";
 import { useEffect, useLayoutEffect } from "react";
-import { describe, expect, it } from "vitest";
 import { createStoreWithHook } from "../src/react";
 
 type State = {
