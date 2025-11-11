@@ -1,0 +1,43 @@
+{
+	"formatter": {
+		"external": {
+			"command": "biome",
+			"arguments": ["format", "--stdin-file-path", "{buffer_path}"]
+		}
+	},
+	"format_on_save": "on",
+	"languages": {
+		"TypeScript": {
+			"formatter": {
+				"external": {
+					"command": "biome",
+					"arguments": ["format", "--stdin-file-path", "{buffer_path}"]
+				}
+			}
+		},
+		"TSX": {
+			"formatter": {
+				"external": {
+					"command": "biome",
+					"arguments": ["format", "--stdin-file-path", "{buffer_path}"]
+				}
+			}
+		},
+		"JavaScript": {
+			"formatter": {
+				"external": {
+					"command": "biome",
+					"arguments": ["format", "--stdin-file-path", "{buffer_path}"]
+				}
+			}
+		},
+		"JSON": {
+			"formatter": {
+				"external": {
+					"command": "biome",
+					"arguments": ["format", "--stdin-file-path", "{buffer_path}"]
+				}
+			}
+		}
+	}
+}
