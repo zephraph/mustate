@@ -36,7 +36,7 @@ function Buttons({ store }: { store: Store<State> }) {
 	}
 
 	function decrement() {
-		store.mutate((state) => {
+		store.set((state) => {
 			state.count--;
 		});
 	}
@@ -65,7 +65,7 @@ function ResetButton() {
 
 // Simlarly, this works too!
 setInterval(() => {
-	store.mutate((state) => {
+	store.set((state) => {
 		state.count++;
 	});
 }, 3000);

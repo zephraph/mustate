@@ -47,14 +47,14 @@ it("uses the store with selectors", async () => {
 	await findByText("count: 1");
 });
 
-it("uses the store with mutate", async () => {
+it("uses the store with set", async () => {
 	const [store, useStore] = createStoreWithHook<State>({
 		count: 0,
 	});
 
 	function Counter() {
 		const count = useStore((state) => state.count);
-		useEffect(() => store.mutate((draft) => void draft.count++), []);
+		useEffect(() => store.set((draft) => void draft.count++), []);
 		return <div>count: {count}</div>;
 	}
 

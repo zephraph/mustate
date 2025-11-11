@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 import { asString, createHLC, tick } from "./hlc";
 import {
 	applyEnhancedPatches,
@@ -221,7 +221,9 @@ describe("CRDT Patches", () => {
 		});
 
 		test("should apply merge operations", () => {
-			const state = { user: { name: "John" } };
+			const state: { user: { name: string; age?: number } } = {
+				user: { name: "John" },
+			};
 			const hlc = asString(tick(createHLC("node1")));
 			const patches: EnhancedPatch[] = [
 				{
@@ -528,7 +530,7 @@ describe("CRDT Patches", () => {
 		});
 
 		test("should maintain deterministic ordering across multiple runs", () => {
-			const state = { items: [] };
+			const state: { items: string[] } = { items: [] };
 			const hlc1 = asString(createHLC("node1", 1000));
 			const hlc2 = asString(createHLC("node2", 2000));
 			const hlc3 = asString(createHLC("node3", 1500));

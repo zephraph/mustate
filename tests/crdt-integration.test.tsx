@@ -222,7 +222,7 @@ describe("CRDT Integration Tests", () => {
 			const state = useStore();
 
 			const updateQuantity = (id: string, delta: number) => {
-				store.mutate((draft) => {
+				store.set((draft) => {
 					const item = draft.items.find((i) => i.id === id);
 					if (item) {
 						item.quantity += delta;
@@ -575,7 +575,7 @@ describe("CRDT Integration Tests", () => {
 
 		// Create patches that remove an item and update sum
 		act(() => {
-			store.mutate((draft) => {
+			store.set((draft) => {
 				const removedItem = draft.items.splice(1, 1)[0]; // Remove item 'b'
 				draft.sum -= removedItem.value;
 			});

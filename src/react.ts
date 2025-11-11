@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
-import type { Store, StoreWithPrivateMethods } from "./index";
-import { createStore, GET_INITIAL_STATE_SYMBOL } from "./index";
+import type { Store, StoreWithPrivateMethods } from "./store";
+import { createStore, GET_INITIAL_STATE_SYMBOL } from "./store";
 
 /**
  * Creates a React hook for the given store that subscribes to state changes and re-renders when the selected state changes.
@@ -17,7 +17,7 @@ import { createStore, GET_INITIAL_STATE_SYMBOL } from "./index";
  * // In a React component
  * function Counter() {
  *   const count = useStore(state => state.count);
- *   return <button onClick={() => store.mutate(draft => { draft.count++ })}>Count: {count}</button>;
+ *   return <button onClick={() => store.set(draft => { draft.count++ })}>Count: {count}</button>;
  * }
  * ```
  */
@@ -86,7 +86,7 @@ export function createStoreHook<State>(store: Store<State>) {
  * // In a React component
  * function Counter() {
  *   const count = useStore(state => state.count);
- *   return <button onClick={() => store.mutate(draft => { draft.count++ })}>Count: {count}</button>;
+ *   return <button onClick={() => store.set(draft => { draft.count++ })}>Count: {count}</button>;
  * }
  * ```
  */

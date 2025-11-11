@@ -15,7 +15,7 @@ type Listener = <A>(...args: A[]) => void;
  * Used for functional updates to the store.
  * @template State - The type of the store state
  */
-type UpdaterFn<State> = (prevState: State) => State;
+type UpdaterFn<State> = (prevState: Draft<State>) => void;
 
 /**
  * A store that manages state and provides methods for updates and subscriptions.
@@ -56,7 +56,7 @@ export class Store<State> {
 	set(nextState: State | UpdaterFn<State>): void {
 		this.currentState =
 			typeof nextState === "function"
-				? create(this.currentState, nextState as (draft: Draft<State>) => void)
+				? create(this.currentState, nextState as UpdaterFn<State>)
 				: nextState;
 		this.listeners.forEach((listener) => listener());
 	}
@@ -84,16 +84,6 @@ export class Store<State> {
 	 */
 	reset(): void {
 		this.set(this.initialState);
-	}
-
-	/**
-	 * Mutate the state using an immer-style draft.
-	 * @param updater - A function that receives a draft of the state to mutate
-	 */
-	mutate(updater: (draft: Draft<State>) => void): void {
-		const currState = this.get();
-		const nextState = create(currState, updater);
-		if (nextState !== currState) this.set(nextState as State);
 	}
 
 	/**

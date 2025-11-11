@@ -40,15 +40,15 @@ function App() {
   );
 }
 
-// You can mutate the store from anywhere you want to,
-// even outside of React code. Mutate is based on mutative.
+// You can update the store from anywhere you want to,
+// even outside of React code. Use set with a function for immutable updates.
 function increment() {
-  store.mutate(state => {
+  store.set(state => {
     state.count++;
   });
 }
 
-// Or you can update it like React.useState's update
+// Or you can update it with a new object
 function decrement() {
   store.set(prevState => ({
     ...prevState,
@@ -123,11 +123,10 @@ The `store` has the following API you can use in or out of React:
 | **Method**                                            | **Description**                                                                                                                                 |
 | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `get()`                                               | Get the current state. Do not use this inside of React, you should instead use [`useStore`](#usestorevalueselector-state-state--value-value)                  |
-| `set(nextState: S \| (prevState: S) => V): void;`     | Set state. This can either take a new value or and updater function (just like React.useState's updater)                                        |
+| `set(nextState: S \| (prevState: S) => V): void;`     | Set state. This can either take a new value or an updater function (just like React.useState's updater). Updater functions can use mutative-style updates powered by mutative. |
 | `on(listener: Function): () => void;`                 | Subscribe to store. Pass in a callback function that will be executed on updates. `on()` returns the unsubscribe function for your convenience. |
 | `off(listener: Function): void;`                      | Unsubscribe a given listener function                                                                                                           |
 | `reset(): void`                                       | Set state back to the `initialState` used when creating the store                                                                               |
-| `mutate(updater: (draft: Draft) => void \| S): void;` | Mutative-style updater function.                                                                                                                   |
 
 #### `useStore<Value>(selector: (state: State) => Value): Value`
 
