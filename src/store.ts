@@ -1,20 +1,18 @@
 import { create, type Patch } from "mutative";
-import { DerivedStore } from "./derived-store";
-import { type Path, PathTrie, type Subscriber } from "./path-trie";
 import type {
-	Store as IStore,
 	PatchNotification,
 	StateType,
+	Store,
 	UpdaterFn,
-	GetAtPath,
-} from "./types";
+} from "./store.types";
 import { assert } from "./utils";
+import { type Path, PathTrie, type Subscriber } from "./utils/path-trie";
 
 const MUTATIVE_OPTS = {
 	enablePatches: true,
 } as const;
 
-export class Store<State extends StateType> implements IStore<State> {
+export class PatchStore<State extends StateType> implements Store<State> {
 	private subscribers = new PathTrie<PatchNotification>();
 	private currentState: State;
 
@@ -26,14 +24,16 @@ export class Store<State extends StateType> implements IStore<State> {
 		return this.currentState;
 	}
 
-	set(nextState: State): void;
-	set(updater: UpdaterFn<State>): void;
 	set(nextState: State | UpdaterFn<State>): void {
 		if (this.currentState === nextState) return;
 
 		const [state, patches, inversePatches] =
 			typeof nextState === "function"
-				? create(this.currentState, nextState, MUTATIVE_OPTS)
+				? create(
+						this.currentState,
+						(draft) => void nextState(draft),
+						MUTATIVE_OPTS,
+					)
 				: create(
 						this.currentState,
 						(draft) => {
@@ -68,9 +68,6 @@ export class Store<State extends StateType> implements IStore<State> {
 		}
 	}
 
-	subscribe(subscriber: Subscriber<PatchNotification>): () => void;
-	subscribe(path: Path, subscriber: Subscriber<PatchNotification>): () => void;
-
 	subscribe(
 		pathOrSubscriber: Path | Subscriber<PatchNotification>,
 		maybeSubscriber?: Subscriber<PatchNotification>,
@@ -88,14 +85,6 @@ export class Store<State extends StateType> implements IStore<State> {
 		);
 		return this.subscribers.subscribe(path, maybeSubscriber);
 	}
-
-	select<P extends Path>(
-		path: P,
-	): GetAtPath<State, P> extends StateType
-		? IStore<GetAtPath<State, P>>
-		: never {
-		return new DerivedStore(this, path) as any;
-	}
 }
 
 /**
@@ -107,5 +96,7 @@ export class Store<State extends StateType> implements IStore<State> {
 export function createStore<State extends StateType>(
 	initialState: State,
 ): Store<State> {
-	return new Store(initialState);
+	return new PatchStore(initialState);
 }
+
+export type * from "./store.types";

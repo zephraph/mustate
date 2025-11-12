@@ -11,7 +11,7 @@ export type Path = PathSegment[];
 /**
  * A subscriber function that gets called when relevant paths change
  */
-export type Subscriber<T = any> = (data: T) => void;
+export type Subscriber<T> = (data: T) => void;
 
 /**
  * Internal node structure for the trie
@@ -42,7 +42,7 @@ class TrieNode<T> {
  * const affected = trie.getAffectedSubscribers(["user", "profile", "age"], "replace");
  * ```
  */
-export class PathTrie<T = any> {
+export class PathTrie<T = unknown> {
 	private root = new TrieNode<T>();
 
 	/**

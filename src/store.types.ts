@@ -1,12 +1,12 @@
 import type { Draft, Patch } from "mutative";
-import type { Path, Subscriber } from "./path-trie";
+import type { Path, Subscriber } from "./utils/path-trie";
 
-type StateType = Record<string, unknown>;
+export type StateType = Record<string, unknown>;
 
 /**
  * Utility type to extract the type at a specific path in an object.
  */
-type GetAtPath<T, P extends Path> = P extends []
+export type GetAtPath<T, P extends Path> = P extends []
 	? T
 	: P extends [infer First, ...infer Rest]
 		? First extends keyof T
@@ -21,12 +21,14 @@ type GetAtPath<T, P extends Path> = P extends []
  * Used for functional updates to the store.
  * @template State - The type of the store state
  */
-type UpdaterFn<State extends StateType> = (prevState: Draft<State>) => void;
+export type UpdaterFn<State extends StateType> = (
+	prevState: Draft<State>,
+) => void;
 
 /**
  * Data passed to path-based subscribers
  */
-interface PatchNotification {
+export interface PatchNotification {
 	patches: Patch[];
 	inversePatches: Patch[];
 }
@@ -47,7 +49,7 @@ interface PatchNotification {
  * store.subscribe(['user', 'name'], (data) => console.log('Name changed:', data));
  * ```
  */
-interface Store<State extends StateType> {
+export interface Store<State extends StateType> {
 	/**
 	 * Get the current state of the store.
 	 * @returns The current state
@@ -97,33 +99,4 @@ interface Store<State extends StateType> {
 	 * ```
 	 */
 	subscribe(path: Path, subscriber: Subscriber<PatchNotification>): () => void;
-
-	/**
-	 * Create a derived store that provides a scoped view of the state at a specific path.
-	 * The derived store acts as a pass-through to this store, but all operations
-	 * (get, set, subscribe) are relative to the selected path.
-	 *
-	 * @param path - The path to select in the state tree
-	 * @returns A new derived store scoped to the specified path
-	 *
-	 * @example
-	 * ```typescript
-	 * const store = createStore({ user: { name: 'Alice', age: 30 } });
-	 * const userStore = store.select(['user']);
-	 *
-	 * // Get scoped state
-	 * console.log(userStore.get()); // { name: 'Alice', age: 30 }
-	 *
-	 * // Set scoped state
-	 * userStore.set({ name: 'Bob', age: 31 });
-	 *
-	 * // Subscribe to scoped changes
-	 * userStore.subscribe((data) => console.log('User changed:', data));
-	 * ```
-	 */
-	select<P extends Path>(
-		path: P,
-	): GetAtPath<State, P> extends StateType ? Store<GetAtPath<State, P>> : never;
 }
-
-export type { Store, StateType, UpdaterFn, PatchNotification, GetAtPath };
