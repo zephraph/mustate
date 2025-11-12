@@ -54,10 +54,8 @@ export class PatchStore<State extends StateType> implements Store<State> {
 		const notifiedSubscribers = new Set<Subscriber<PatchNotification>>();
 
 		for (const patch of patches) {
-			const affected = this.subscribers.getAffectedSubscribers(
-				patch.path as Path,
-				patch.op as "add" | "remove" | "replace",
-			);
+			const path = Array.isArray(patch.path) ? patch.path : [patch.path];
+			const affected = this.subscribers.getAffectedSubscribers(path, patch.op);
 
 			for (const subscriber of affected) {
 				if (!notifiedSubscribers.has(subscriber)) {

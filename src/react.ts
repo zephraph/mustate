@@ -29,11 +29,11 @@ export function useStore<State extends StateType, Selected = State>(
 	store: Store<State>,
 	selector?: (state: State) => Selected,
 ): State | Selected {
-	selector ??= (state) => state as unknown as Selected;
+	const getSnapshot = () => (selector ? selector(store.get()) : store.get());
 	return useSyncExternalStore(
 		store.subscribe.bind(store),
-		() => selector(store.get()),
+		getSnapshot,
 		// TODO: Does this need to rely on the initial state of the store?
-		() => selector(store.get()),
+		getSnapshot,
 	);
 }
