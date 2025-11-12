@@ -20,9 +20,6 @@ run = "biome check --unsafe --write ."
 [tasks.start]
 run = "bun run build --watch"
 
-[tasks.build]
-run = "bun run build"
-
 [tasks.test]
 run = "bun test"
 
@@ -30,8 +27,7 @@ run = "bun test"
 run = "tsc --noEmit"
 
 [tasks.example]
-depends = ["build"]
-run = "bun start"
+run = "bun index.html"
 dir = "example"
 
 [tasks.bump]

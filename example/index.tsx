@@ -1,12 +1,8 @@
 import { createRoot } from "react-dom/client";
-import type { Store } from "../src";
-import { createStoreWithHook } from "../src/react";
+import { createStore } from "../src";
+import { useStore } from "../src/react";
 
-export interface State {
-	count: number;
-}
-
-export const [store, useStore] = createStoreWithHook<State>({
+const store = createStore({
 	count: 0,
 });
 
@@ -14,31 +10,29 @@ const App = () => {
 	return (
 		<div>
 			<Label />
-			<Buttons store={store} />
+			<Buttons />
 			<ResetButton />
 		</div>
 	);
 };
 
 function Label() {
-	// Since our Mutik state is just the  { count } itself,
-	// our selector is very simple!
-	const count = useStore((state) => state.count);
+	// Subscribe to a slice of state with a selector
+	const count = useStore(store, (state) => state.count);
 	return <p>The count is {count}</p>;
 }
 
-function Buttons({ store }: { store: Store<State> }) {
+function Buttons() {
 	function increment() {
-		store.set((state) => ({
-			...state,
-			count: state.count + 1,
-		}));
+		// Use mutative-style updates with the draft
+		store.set((state) => {
+			state.count++;
+		});
 	}
 
 	function decrement() {
-		store.set((state) => {
-			state.count--;
-		});
+		// Or use immutable-style updates
+		store.set({ count: store.get().count - 1 });
 	}
 
 	return (
@@ -55,20 +49,17 @@ function Buttons({ store }: { store: Store<State> }) {
 
 function ResetButton() {
 	// Notice how `store` isn't a prop? This still updates because the
-	// selector in Label is wired into the mutable store. #justtheviewlayer
+	// selector in Label is wired into the store. #justtheviewlayer
+	function reset() {
+		store.set({ count: 0 });
+	}
+
 	return (
-		<button type="button" onClick={() => store.reset()}>
+		<button type="button" onClick={reset}>
 			Reset
 		</button>
 	);
 }
-
-// Simlarly, this works too!
-setInterval(() => {
-	store.set((state) => {
-		state.count++;
-	});
-}, 3000);
 
 const container = document.getElementById("root");
 if (container) {
