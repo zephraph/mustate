@@ -139,4 +139,5 @@ function EvenOddDisplay() {
 
 ## Inspiration
 
-This project was inspired by Jared Palmer's [Mutik](https://github.com/jaredpalmer/mutik).
+- [Mutik](https://github.com/jaredpalmer/mutik).
+- [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
