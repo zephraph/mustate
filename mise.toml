@@ -33,3 +33,7 @@ run = "tsc --noEmit"
 depends = ["build"]
 run = "bun start"
 dir = "example"
+
+[tasks.bump]
+description = "Bump version (usage: mise run bump [major|minor|patch])"
+run = "bun run example/bump-version.ts ${@:-patch}"
