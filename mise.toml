@@ -1,6 +1,7 @@
 [tools]
 bun = "1.2.8"
 lefthook = "1.13.0"
+"npm:jsr" = "0.13.5"
 
 [env]
 _.path = "node_modules/.bin"
