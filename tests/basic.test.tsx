@@ -1,19 +1,20 @@
 import { describe, expect, it } from "bun:test";
 import { act, render, renderHook, waitFor } from "@testing-library/react";
 import { useEffect, useLayoutEffect } from "react";
-import { createStoreWithHook } from "../src/react";
+import { useStore } from "~/react";
+import { createStore } from "~/store";
 
 type State = {
 	count: number;
 };
 
 it("uses the store with no args", async () => {
-	const [store, useStore] = createStoreWithHook<State>({
+	const store = createStore({
 		count: 0,
 	});
 
 	function Counter() {
-		const { count } = useStore();
+		const { count } = useStore(store);
 		useEffect(() => {
 			if (count === 0) {
 				store.set({ count: count + 1 });
@@ -28,12 +29,12 @@ it("uses the store with no args", async () => {
 });
 
 it("uses the store with selectors", async () => {
-	const [store, useStore] = createStoreWithHook<State>({
+	const store = createStore<State>({
 		count: 0,
 	});
 
 	function Counter() {
-		const count = useStore((state) => state.count);
+		const count = useStore(store, (state) => state.count);
 		useEffect(() => {
 			if (count === 0) {
 				store.set({ count: count + 1 });
@@ -48,13 +49,13 @@ it("uses the store with selectors", async () => {
 });
 
 it("uses the store with set", async () => {
-	const [store, useStore] = createStoreWithHook<State>({
+	const store = createStore<State>({
 		count: 0,
 	});
 
 	function Counter() {
-		const count = useStore((state) => state.count);
-		useEffect(() => store.set((draft) => void draft.count++), []);
+		const count = useStore(store, (state) => state.count);
+		useEffect(() => store.set((draft) => draft.count++), []);
 		return <div>count: {count}</div>;
 	}
 
@@ -70,7 +71,7 @@ it("only re-renders if the selected state changes", async () => {
 		settings: { theme: string };
 	};
 
-	const [store, useStore] = createStoreWithHook<MultiState>({
+	const store = createStore<MultiState>({
 		count: 0,
 		name: "initial",
 		settings: { theme: "light" },
@@ -81,19 +82,19 @@ it("only re-renders if the selected state changes", async () => {
 	let themeRenderCount = 0;
 
 	function CountDisplay() {
-		const count = useStore((state) => state.count);
+		const count = useStore(store, (state) => state.count);
 		countRenderCount++;
 		return <div data-testid="count-display">count: {count}</div>;
 	}
 
 	function NameDisplay() {
-		const name = useStore((state) => state.name);
+		const name = useStore(store, (state) => state.name);
 		nameRenderCount++;
 		return <div data-testid="name-display">name: {name}</div>;
 	}
 
 	function ThemeDisplay() {
-		const theme = useStore((state) => state.settings.theme);
+		const theme = useStore(store, (state) => state.settings.theme);
 		themeRenderCount++;
 		return <div data-testid="theme-display">theme: {theme}</div>;
 	}
@@ -152,12 +153,12 @@ it("only re-renders if the selected state changes", async () => {
 });
 
 it("re-renders with useLayoutEffect", async () => {
-	const [store, useStore] = createStoreWithHook<{ state: boolean }>({
+	const store = createStore<{ state: boolean }>({
 		state: false,
 	});
 
 	function Component() {
-		const { state } = useStore();
+		const { state } = useStore(store);
 		useLayoutEffect(() => {
 			store.set({ state: true });
 		}, []);
@@ -172,7 +173,7 @@ it("re-renders with useLayoutEffect", async () => {
 
 it("can update the selector", async () => {
 	type State = { one: string; two: string };
-	const [_store, useStore] = createStoreWithHook<State>({
+	const store = createStore<State>({
 		one: "one",
 		two: "two",
 	});
@@ -182,7 +183,7 @@ it("can update the selector", async () => {
 	}: {
 		selector: (s: { one: string; two: string }) => string;
 	}) {
-		return <div>{useStore(selector)}</div>;
+		return <div>{useStore(store, selector)}</div>;
 	}
 
 	const { findByText, rerender } = render(
@@ -196,9 +197,9 @@ it("can update the selector", async () => {
 
 describe("modern hook tests", () => {
 	it("works with renderHook", () => {
-		const [store, useStore] = createStoreWithHook({ count: 0 });
+		const store = createStore({ count: 0 });
 
-		const { result } = renderHook(() => useStore());
+		const { result } = renderHook(() => useStore(store));
 
 		expect(result.current.count).toBe(0);
 
@@ -210,7 +211,7 @@ describe("modern hook tests", () => {
 	});
 
 	it("selector prevents unnecessary re-renders", () => {
-		const [store, useStore] = createStoreWithHook({
+		const store = createStore({
 			count: 0,
 			name: "test",
 		});
@@ -218,7 +219,7 @@ describe("modern hook tests", () => {
 		let renderCount = 0;
 		const { result } = renderHook(() => {
 			renderCount++;
-			return useStore((state) => state.count);
+			return useStore(store, (state) => state.count);
 		});
 
 		expect(renderCount).toBe(1);

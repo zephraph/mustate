@@ -1,2 +1,2 @@
-export * from "./react";
-export * from "./store";
+export { createStore } from "./store";
+export type * from "./store.types";
