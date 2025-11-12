@@ -1,11 +1,16 @@
 {
 	"name": "@justbe/mustate",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"exports": {
 		".": "./src/index.ts",
 		"./react": "./src/react.ts"
 	},
 	"publish": {
-		"include": ["LICENSE", "README.md", "tsconfig.json", "src/**"]
+		"include": [
+			"LICENSE",
+			"README.md",
+			"tsconfig.json",
+			"src/**"
+		]
 	}
 }
