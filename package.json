@@ -1,6 +1,6 @@
 {
 	"name": "@just-be/mustate",
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"type": "module",
 	"author": "Justin Bennett <oss@just-be.dev>",
 	"workspaces": [
