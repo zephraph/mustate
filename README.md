@@ -13,20 +13,20 @@ npm install @just-be/mustate
 - [Example](#example)
 - [API](#api)
   - [`createStore<State>(initialState: State): Store<State>`](#createstorestateintialstate-state-storestate)
-  - [`createStoreHook<State>(store: Store<State>): useStore`](#createstorehookstatestore-storestate-usestore)
-  - [`createStoreWithHook<State>(initialState: State): [Store<State>, useStore]`](#createstorewithhookstateintialstate-state-storestate-usestore)
+  - [`useStore<State>(store: Store<State>): State`](#usestorestatestore-storestate-state)
+  - [`useStore<State, Selected>(store: Store<State>, selector: (state: State) => Selected): Selected`](#usestorestate-selectedstore-storestate-selector-state-state--selected-selected)
     - [`store`](#store)
-    - [`useStore<Value>(selector: (state: State) => Value): Value`](#usestorevalueselector-state-state--value-value)
 
 ## Example
 
 ```jsx
 import React from 'react';
 import { render } from 'react-dom';
-import { createStoreWithHook } from '@just-be/mustate';
+import { createStore } from '@just-be/mustate';
+import { useStore } from '@just-be/mustate/react';
 
-// Create a lil' store with some state
-let [store, useStore] = createStoreWithHook({
+// Create a store with some state
+const store = createStore({
   count: 0,
 });
 
@@ -41,7 +41,7 @@ function App() {
 }
 
 // You can update the store from anywhere you want to,
-// even outside of React code. Use set with a function for immutable updates.
+// even outside of React code. Use set with a function for mutative-style updates.
 function increment() {
   store.set(state => {
     state.count++;
@@ -50,10 +50,7 @@ function increment() {
 
 // Or you can update it with a new object
 function decrement() {
-  store.set(prevState => ({
-    ...prevState,
-    count: prevState.count - 1
-  }));
+  store.set({ count: store.get().count - 1 });
 }
 
 // You don't need to pass the store down as a prop either
@@ -66,11 +63,11 @@ function Buttons() {
   );
 }
 
-// Lastly, you can subscribe to "slices" of state by passing a selector to
+// You can subscribe to "slices" of state by passing a selector to
 // useStore. The component will only be re-rendered when that portion of state
 // changes.
 function Label() {
-  const count = useStore(state => state.count);
+  const count = useStore(store, state => state.count);
   return <p>The count is {count}</p>;
 }
 
@@ -89,64 +86,54 @@ import { createStore } from '@just-be/mustate';
 const store = createStore({ count: 0, name: 'Alice' });
 ```
 
-### `createStoreHook<State>(store: Store<State>): useStore`
-
-Create a React hook for a specific store. This allows you to subscribe to state changes in React components.
-
-```jsx
-import { createStore, createStoreHook } from '@just-be/mustate';
-
-const store = createStore({ count: 0 });
-const useStore = createStoreHook(store);
-
-// In a React component
-function Counter() {
-  const count = useStore(state => state.count);
-  return <div>{count}</div>;
-}
-```
-
-### `createStoreWithHook<State>(initialState: State): [Store<State>, useStore]`
-
-Convenience function that combines `createStore` and `createStoreHook`. This is equivalent to calling both functions separately.
-
-```jsx
-import { createStoreWithHook } from '@just-be/mustate';
-
-const [store, useStore] = createStoreWithHook({ count: 0, name: 'Alice' });
-```
+#### `store`
 
 The `store` has the following API you can use in or out of React:
 
-#### `store`
-
 | **Method**                                            | **Description**                                                                                                                                 |
 | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `get()`                                               | Get the current state. Do not use this inside of React, you should instead use [`useStore`](#usestorevalueselector-state-state--value-value)                  |
-| `set(nextState: S \| (prevState: S) => V): void;`     | Set state. This can either take a new value or an updater function (just like React.useState's updater). Updater functions can use mutative-style updates powered by mutative. |
-| `on(listener: Function): () => void;`                 | Subscribe to store. Pass in a callback function that will be executed on updates. `on()` returns the unsubscribe function for your convenience. |
-| `off(listener: Function): void;`                      | Unsubscribe a given listener function                                                                                                           |
-| `reset(): void`                                       | Set state back to the `initialState` used when creating the store                                                                               |
+| `get()`                                               | Get the current state. Do not use this inside of React, you should instead use [`useStore`](#usestorestatestore-storestate-state)                  |
+| `set(nextState: State): void`                         | Set state to a new value. This performs a shallow merge of the new state with the current state. |
+| `set(updater: (draft: State) => void): void`          | Set state using a mutative-style updater function powered by [mutative](https://github.com/unadlib/mutative). The draft can be mutated directly. |
+| `subscribe(listener: (notification: PatchNotification) => void): () => void` | Subscribe to all state changes. Returns an unsubscribe function. The listener receives patch and inverse patch information. |
+| `subscribe(path: string[], listener: (notification: PatchNotification) => void): () => void` | Subscribe to changes at a specific path in the state tree. Only notified when that path or its ancestors/descendants change. |
 
-#### `useStore<Value>(selector: (state: State) => Value): Value`
+### `useStore<State>(store: Store<State>): State`
 
-React hook to subscribe to mustate state.
+React hook to subscribe to the entire store state. Returns the complete state object.
 
 ```jsx
-const selector = state => state.count;
+import { useStore } from '@just-be/mustate/react';
 
-function Label() {
-  const count = useStore(selector);
-  return <p>The count is {count}</p>;
+function Component() {
+  const state = useStore(store);
+  return <div>Count: {state.count}, Name: {state.name}</div>;
 }
 ```
 
-You can use props with mustate selector.
+### `useStore<State, Selected>(store: Store<State>, selector: (state: State) => Selected): Selected`
+
+React hook to subscribe to a slice of the store state. The component will only re-render when the selected portion of state changes.
 
 ```jsx
+import { useStore } from '@just-be/mustate/react';
+
+// Select a specific property
+function Label() {
+  const count = useStore(store, state => state.count);
+  return <p>The count is {count}</p>;
+}
+
+// Use with props
 function User({ id }) {
-  const user = useStore(state => state.users[id]);
+  const user = useStore(store, state => state.users[id]);
   return <p>The username is {user.name}</p>;
+}
+
+// Select computed values
+function EvenOddDisplay() {
+  const isEven = useStore(store, state => state.count % 2 === 0);
+  return <p>Count is {isEven ? 'even' : 'odd'}</p>;
 }
 ```
 
