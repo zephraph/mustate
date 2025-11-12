@@ -1,2 +1,2 @@
 export { createStore } from "./store";
-export type * from "./store.types";
+export type { StateType, Store } from "./store.types";
