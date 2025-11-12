@@ -4,5 +4,8 @@
 	"exports": {
 		".": "./src/index.ts",
 		"./react": "./src/react.ts"
+	},
+	"publish": {
+		"include": ["LICENSE", "README.md", "tsconfig.json", "src/**"]
 	}
 }
