@@ -1,7 +1,7 @@
 import type { Draft, Patch } from "mutative";
 import type { Path, Subscriber } from "./utils/path-trie";
 
-export type StateType = Record<string, unknown>;
+export type StateType = Record<string, unknown> | object;
 
 /**
  * Utility type to extract the type at a specific path in an object.
